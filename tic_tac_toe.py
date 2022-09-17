@@ -43,50 +43,32 @@ def main():
             display(game_list)
             validate = True   
             
-            # loop until a valid input is given
+            # loop until a valid input is given, then take the appropriate actions
             while validate:
             
                 # display player's turn, error check the input, insert into game list
-                position = input(f"\nIt is {player}'s turn. Choose untaken spot: ")
-                if position.isdigit():
-                    position = int(position)
-                    if position >= 1  and position < 10:
-                        position -= 1
-                        if game_list[position] != "x" and game_list[position] != "o":
-                            game_list[position] = player
-                            validate = False
+                position = input(f"\nIt is {player}'s turn. Choose an untaken spot: ")
+                if is_valid(position, game_list):
+                    position = int(position) - 1
+                    game_list[position] = player
+                    validate = False
                             
-                            # change player's turn 
-                            if player == "x":
-                                player = "o"
-                            else:
-                                player = "x"
-
-                            # check for winner
-                            result = winner_check(game_list)
-                            if result != "s":
-                                game_loop = False
-                        else:
-                            print("You can't choose a spot already taken!")
+                    # change player's turn 
+                    if player == "x":
+                        player = "o"
                     else:
-                        print("Choice must be a valid number!")
-                else:
-                    print("Choice must be a number!")
+                        player = "x"
+
+                    # check for winner
+                    result = winner_check(game_list)
+                    
+                    # if the response is anything but space available, end game loop
+                    if result != "s":
+                        game_loop = False
                             
         # display game outcome
-        if result == "d":
-            print("\nThe game is a ", end="")
-            print("\033[0;31mDRAW\033[00m", end="")
-            print("!")
-        else:
-            if result == "x":
-                print("\033[0;34m\nX\033[00m", end="")
-            elif result == "o":
-                print("\033[0;35m\nO\033[00m", end="")
-            print(" is the ", end="")
-            print("\033[0;32mWINNER\033[00m", end="")
-            print("!")
-        display(game_list)          
+        show_outcome(result)
+        display(game_list)        
 
         # ask player if they want to play again, set multi_play accordingly
         play = input("\nWould you like to play again y/n? ")
@@ -172,6 +154,52 @@ def display(game_list):
             print("|", end="")
     print()
 
+# function to validate user input
+def is_valid(user, game_list):
+    """
+    parameter: user - user input checked for validity
+    return: bool indicating the input is valid or invalid
+    This function will accept a user input, check it see if it is valid,
+    (meaning it is a number between 1 and 9 and the spot is not already
+    taken), and then it will return a bool indicating whether or not
+    the input is valid. it will also display any error messages which 
+    are needed.
+    """
+    if user.isdigit():
+        user = int(user)
+        if user >= 1 and user < 10:
+            user -= 1
+            if game_list[user] != "x" and game_list[user] != "o":
+                return True
+            else:
+                print("You can't choose a spot already taken!")
+        else:
+            print("Choice must be a number between 1 and 9!")
+    else:
+        print("Choice must be an integer number!")
+    return False
+
+# function to show game outcome
+def show_outcome(result):
+    """
+    parameter: result - response from the winner_check function
+    return: nothing
+    This function will accept the result from the winner_check function
+    and display the outcome of o wins, x wins, or the game is a draw.
+    """
+    if result == "d":
+        print("\nThe game is a ", end="")
+        print("\033[0;31mDRAW\033[00m", end="")
+        print("!")
+    else:
+        if result == "x":
+            print("\033[0;34m\nX\033[00m", end="")
+        elif result == "o":
+            print("\033[0;35m\nO\033[00m", end="")
+        print(" is the ", end="")
+        print("\033[0;32mWINNER\033[00m", end="")
+        print("!")
+  
 # run main unless imported
 if __name__ == "__main__":
     main()
