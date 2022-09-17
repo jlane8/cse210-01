@@ -90,7 +90,7 @@ def main():
 
         # ask player if they want to play again, set multi_play accordingly
         play = input("\nWould you like to play again y/n? ")
-        if play.lower() == "n":
+        if play.lower() != "y":
             print("Thanks for playing Tic Tac Toe!")
             multi_play = False   
             print() 
@@ -171,8 +171,6 @@ def display(game_list):
         if i != 2 and i != 5 and i != 8:
             print("|", end="")
     print()
-    #print("\033[0;32mOK this is green\033[00m")
-    #print("\033[0;31mERROR this is red\033[00m")
 
 # run main unless imported
 if __name__ == "__main__":
