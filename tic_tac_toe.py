@@ -24,19 +24,17 @@ def main():
     multi_play = True
     game_loop = True
     result = ""
-    
+    game_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
     # set up while loop for multi-game play
-    while multi_play:
+    while multi_play:        
         
-        # declare empty game_list
-        game_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        
-        # determine if x or o goes first using random number
-        first = random.randint(0,1)
+        # randomly determine if x or o goes first
+        first = random.randint(0,2)
         if first == 0:
             player = "x"
         else:
-            player = "y"
+            player = "o"
 
         # set up game loop to run until there is a winner or a draw
         while game_loop:
@@ -54,13 +52,13 @@ def main():
                     position = int(position)
                     if position >= 1  and position < 10:
                         position -= 1
-                        if game_list[position] != "x" and game_list[position] != "y":
+                        if game_list[position] != "x" and game_list[position] != "o":
                             game_list[position] = player
                             validate = False
                             
                             # change player's turn 
                             if player == "x":
-                                player = "y"
+                                player = "o"
                             else:
                                 player = "x"
 
@@ -77,23 +75,28 @@ def main():
                             
         # display game outcome
         if result == "d":
-            print("\nThe game is a draw!\n")
+            print("\nThe game is a ", end="")
+            print("\033[0;31mDRAW\033[00m", end="")
+            print("!")
         else:
-            print(f"\nThe winner is {result}!\n")  
+            if result == "x":
+                print("\033[0;34m\nX\033[00m", end="")
+            elif result == "o":
+                print("\033[0;35m\nO\033[00m", end="")
+            print(" is the ", end="")
+            print("\033[0;32mWINNER\033[00m", end="")
+            print("!")
         display(game_list)          
 
         # ask player if they want to play again, set multi_play accordingly
         play = input("\nWould you like to play again y/n? ")
         if play.lower() == "n":
+            print("Thanks for playing Tic Tac Toe!")
             multi_play = False   
             print() 
         else:
             game_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
             game_loop = True
-            print()
-    
-    # print out who won
-    
 
 # function to check to see if game has been won, returns player who won
 def winner_check(game_list):
@@ -111,16 +114,16 @@ def winner_check(game_list):
     for i in range(0, 9, 3):
         if game_list[i] == "x" and game_list[i + 1] == "x" and  game_list[i + 2] == "x":
             return "x"
-        elif game_list[i] == "y" and game_list[i + 1] == "y" and  game_list[i + 2] == "y":
-            return "y"
+        elif game_list[i] == "o" and game_list[i + 1] == "o" and  game_list[i + 2] == "o":
+            return "o"
     
     # loop to see if a player has won by getting three in a row vertically,
     # if so, return winner
     for i in range(0, 3):
         if game_list[i] == "x" and game_list[i + 3] == "x" and  game_list[i + 6] == "x":
             return "x"
-        elif game_list[i] == "y" and game_list[i + 3] == "y" and  game_list[i + 6] == "y":
-            return "y"
+        elif game_list[i] == "o" and game_list[i + 3] == "o" and  game_list[i + 6] == "o":
+            return "o"
     
     # loop to see if a player has won by getting one of the diagonals, if so
     # return winner
@@ -128,10 +131,10 @@ def winner_check(game_list):
         return "x"
     elif game_list[2] == "x" and game_list[4] == "x" and  game_list[6] == "x":
         return "x"
-    elif game_list[0] == "y" and game_list[4] == "y" and  game_list[8] == "y":
-        return "y"
-    elif game_list[2] == "y" and game_list[4] == "y" and  game_list[6] == "y":
-        return "y"
+    elif game_list[0] == "o" and game_list[4] == "o" and  game_list[8] == "o":
+        return "o"
+    elif game_list[2] == "o" and game_list[4] == "o" and  game_list[6] == "o":
+        return "o"
     
     # if game_list has an open space, return s indicating a space can be chosen
     for i in range(9):
@@ -148,14 +151,28 @@ def display(game_list):
     return: nothing
     display accepts the game list and displays the game in the terminal
     """
+    # set color to white
+    color = 29 
+
+    # display clean line
+    print()
+    
     # display current game before move, indicate which player's turn it is
     for i in range(9):
+        if game_list[i] == "x":
+            color = 34
+        elif game_list[i] == "o":
+            color = 35
+        else:
+            color = 29
         if i % 3 == 0 and i != 0:
             print("\n-+-+-")
-        print(game_list[i], end="")
+        print(f"\033[0;{color}m{game_list[i]}\033[00m", end="")
         if i != 2 and i != 5 and i != 8:
             print("|", end="")
     print()
+    #print("\033[0;32mOK this is green\033[00m")
+    #print("\033[0;31mERROR this is red\033[00m")
 
 # run main unless imported
 if __name__ == "__main__":
